@@ -19,3 +19,13 @@ export type Job = {
     interview_stages?: InterviewStage[]
     created_at?: string
 }
+
+export type JobStore = {
+    jobs: Job[]
+    addJob: (job: Job) => void
+    updateJob: (id: string, update: Partial<Job>) => void
+    deleteJob: (id: string) => void
+    setJobs: (jobs: Job[]) => void
+    searchQuery: string
+    setSearchQuery: (query: string) => void
+}

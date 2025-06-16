@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { MOCK_JOBS } from "../mock/mockData.ts";
 import { AddNewJob } from "./AddNewJob.tsx";
 import type { Job } from "../types.ts";
 import { JobDetailsModal } from "./JobDetailsModal.tsx";
 import { statusColor } from "../utils.ts";
+import { useJobStore } from "../stores/jobStore.ts";
 
 export const Dashboard = () => {
-    const [jobs, setJobs] = useState<Job[]>(MOCK_JOBS)
-    const [filteredJobs, setFilteredJobs] = useState<Job[]>(MOCK_JOBS)
+    const jobs = useJobStore((state) => state.jobs)
+    const setJobs = useJobStore((state => state.setJobs))
+
+    const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs)
     const [filter, setFilter] = useState('all')
     const [showModal, setShowModal] = useState(false)
     const [selectedJob, setSelectedJob] = useState<Job | null>(null)
@@ -20,14 +22,12 @@ export const Dashboard = () => {
 
     const handleAddJob = (job: Job) => {
         const newJob = { ...job, id: Date.now() }
-        setJobs(prev => [newJob, ...prev])
+        setJobs([newJob, ...jobs])
         setShowModal(false)
     }
 
     const handleUpdateJob = (updatedJob: Job) => {
-        setJobs(prev =>
-            prev.map(j => (j.id === updatedJob.id ? updatedJob : j))
-        )
+        setJobs(jobs.map(j => (j.id === updatedJob.id ? updatedJob : j)))
     }
 
     return (
