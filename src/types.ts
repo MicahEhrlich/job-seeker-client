@@ -1,10 +1,14 @@
 export type JobStatus = 'applied' | 'interviewing' | 'offered' | 'rejected' | 'accepted';
 export type InterviewStageStatus = 'pending' | 'upcoming' | 'done';
 export type InterviewStage = {
+    jobId: number
+    id: number
     stage: string
     person: string
     date: string
     status: string
+    notes?: string
+    questionsAsked?: string[]
 }
 
 export type Job = {

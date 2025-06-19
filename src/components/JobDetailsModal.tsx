@@ -8,6 +8,8 @@ import {
 } from 'react-icons/hi';
 import type { InterviewStage, Job } from '../types';
 import { inferStatusFromStages } from '../utils';
+import { useState } from 'react';
+import { InterviewStageDialog } from './InterviewStageDialog';
 
 
 type JobDetailsModalProps = {
@@ -45,6 +47,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
             interview_stages: job.interview_stages || [],
         },
     })
+    const [openStageDialog, setOpenStageDialog] = useState<InterviewStage | null>(null)
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -68,6 +71,24 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
     }
 
     const todayStr = format(new Date(), 'yyyy-MM-dd')
+
+    const updateStageForJob = (updatedStage: InterviewStage) => {
+        const updatedStages = fields.map((stage) => {
+            if (updatedStage.id === stage.id) {
+                return {
+                    ...stage,
+                    ...updatedStage,
+                    id: stage.id, // keep id as string
+                }
+            }
+            return stage
+        })
+        onUpdateJob({
+            ...job,
+            interview_stages: updatedStages,
+            status: inferStatusFromStages(updatedStages, job.status === 'rejected'),
+        })
+    }
 
     return (
         <div className="fixed inset-0 bg-opacity-40 flex justify-center items-center z-50">
@@ -120,7 +141,13 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                                         <option value="done">Done</option>
                                         <option value="cancelled">Cancelled</option>
                                     </select>
-
+                                    <button
+                                        className="text-blue-600 text-sm"
+                                        onClick={() => setOpenStageDialog(field)}
+                                        type="button"
+                                    >
+                                        Notes
+                                    </button>
                                     <button
                                         type="button"
                                         onClick={() => remove(index)}
@@ -147,6 +174,8 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                             type="button"
                             onClick={() =>
                                 append({
+                                    id: Date.now(), // or use a better unique id generator if available
+                                    jobId: job.id,
                                     stage: '',
                                     person: '',
                                     date: todayStr,
@@ -188,6 +217,16 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                         </div>
                     </div>
                 </form>
+                {openStageDialog && (
+                    <InterviewStageDialog
+                        isOpen={!!openStageDialog}
+                        onClose={() => setOpenStageDialog(null)}
+                        interviewStage={openStageDialog}
+                        onUpdateStage={(updatedStage) => {
+                            updateStageForJob(updatedStage)
+                        }}
+                    />
+                )}
             </div>
         </div>
     )

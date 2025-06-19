@@ -54,7 +54,9 @@ export const JobBoard = () => {
     return (
         <div className="p-4 min-h-screen">
             <h1 className="text-3xl font-bold mb-6 text-center">Job Application Board</h1>
-            <SearchBar />
+            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-4">
+                <SearchBar />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {statuses.map(({ key, label, icon: Icon, color }) => (
                     <div key={key} className={`rounded-2xl shadow-md p-3 ${bgColors[color]}`}>
