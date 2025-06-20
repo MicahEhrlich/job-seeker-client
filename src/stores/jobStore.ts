@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { JobStore } from "../types"
+import type { InterviewStage, JobStore } from "../types"
 import { MOCK_JOBS } from "../mock/mockData"
 
 export const useJobStore = create<JobStore>()(
@@ -27,6 +27,21 @@ export const useJobStore = create<JobStore>()(
                 })),
 
             setJobs: (jobs) => set({ jobs }),
+            // inside your job store
+            updateStage: (jobId: number, updatedStage: InterviewStage) => {
+                set((state) => ({
+                    jobs: state.jobs.map((job) => {
+                        if (job.id !== jobId) return job
+                        return {
+                            ...job,
+                            interview_stages: job.interview_stages && job.interview_stages.map((s) =>
+                                s.id === updatedStage.id ? updatedStage : s
+                            ),
+                        }
+                    }),
+                }))
+            }
+
         }),
         {
             name: "job-storage", // persist to localStorage

@@ -44,7 +44,6 @@ export const Dashboard = () => {
                 ))}
             </div>
 
-            {/* Add Button */}
             <div className="mb-6">
                 <button onClick={() => setShowModal(true)} className="bg-black text-white px-4 py-2 rounded">+ Add New Job</button>
             </div>
@@ -54,7 +53,6 @@ export const Dashboard = () => {
             {selectedJob && (
                 <JobDetailsModal job={selectedJob} onClose={() => setSelectedJob(null)} onUpdateJob={handleUpdateJob} />
             )}
-            {/* Job Cards */}
             <div className="grid gap-4">
                 {filteredJobs.map((job) => (
                     <div key={job.id} className="border rounded p-4">

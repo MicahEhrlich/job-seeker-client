@@ -23,7 +23,8 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
 
   const handleDeleteQuestion = (index: number) => {
     const updated = questions.filter((_, i) => i !== index)
-    setQuestions(updated)
+    const updatedQuestions = [...updated]
+    setQuestions(updatedQuestions)
     onUpdateStage({ ...interviewStage, questionsAsked: updated })
   }
 

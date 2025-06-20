@@ -10,6 +10,7 @@ import type { InterviewStage, Job } from '../types';
 import { inferStatusFromStages } from '../utils';
 import { useState } from 'react';
 import { InterviewStageDialog } from './InterviewStageDialog';
+import { useJobStore } from '../stores/jobStore';
 
 
 type JobDetailsModalProps = {
@@ -48,6 +49,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
         },
     })
     const [openStageDialog, setOpenStageDialog] = useState<InterviewStage | null>(null)
+    const updateStageForJob = useJobStore((state) => state.updateStage)
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -60,7 +62,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
         })
 
         const inferredStatus = inferStatusFromStages(sortedStages, job.status === 'rejected')
-
         onUpdateJob({
             ...job,
             interview_stages: sortedStages,
@@ -72,23 +73,23 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
 
     const todayStr = format(new Date(), 'yyyy-MM-dd')
 
-    const updateStageForJob = (updatedStage: InterviewStage) => {
-        const updatedStages = fields.map((stage) => {
-            if (updatedStage.id === stage.id) {
-                return {
-                    ...stage,
-                    ...updatedStage,
-                    id: stage.id, // keep id as string
-                }
-            }
-            return stage
-        })
-        onUpdateJob({
-            ...job,
-            interview_stages: updatedStages,
-            status: inferStatusFromStages(updatedStages, job.status === 'rejected'),
-        })
-    }
+    // const updateStageForJob = (updatedStage: InterviewStage) => {
+    //     const updatedStages = fields.map((stage) => {
+    //         if (updatedStage.id === stage.id) {
+    //             return {
+    //                 ...stage,
+    //                 ...updatedStage,
+    //                 id: stage.id, // keep id as string
+    //             }
+    //         }
+    //         return stage
+    //     })
+    //     onUpdateJob({
+    //         ...job,
+    //         interview_stages: updatedStages,
+    //         status: inferStatusFromStages(updatedStages, job.status === 'rejected'),
+    //     })
+    // }
 
     return (
         <div className="fixed inset-0 bg-opacity-40 flex justify-center items-center z-50">
@@ -223,7 +224,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                         onClose={() => setOpenStageDialog(null)}
                         interviewStage={openStageDialog}
                         onUpdateStage={(updatedStage) => {
-                            updateStageForJob(updatedStage)
+                            updateStageForJob(updatedStage.jobId, updatedStage)
                         }}
                     />
                 )}
