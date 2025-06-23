@@ -48,6 +48,8 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
             interview_stages: job.interview_stages || [],
         },
     })
+    
+    const jobs = useJobStore((state) => state.jobs)
     const [openStageDialog, setOpenStageDialog] = useState<InterviewStage | null>(null)
     const updateStageForJob = useJobStore((state) => state.updateStage)
 
@@ -55,6 +57,21 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
         control,
         name: 'interview_stages',
     })
+
+    const handleSetStageDialog = (stage: InterviewStage) => {
+        const updatedStage = {
+            ...stage,
+            questionsAsked: jobs.find(j => j.id === stage.jobId)?.interview_stages?.find(s => s.stageId === stage.stageId)?.questionsAsked || [],
+        }
+        setOpenStageDialog(updatedStage)
+    }
+
+    const handleOnClose = (stage: InterviewStage) => {
+        if (stage) {
+            updateStageForJob(stage.jobId, stage)
+        }
+        setOpenStageDialog(null)
+    }
 
     const onSubmit = (data: { interview_stages: InterviewStage[] }) => {
         const sortedStages = [...data.interview_stages].sort((a, b) => {
@@ -72,24 +89,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
     }
 
     const todayStr = format(new Date(), 'yyyy-MM-dd')
-
-    // const updateStageForJob = (updatedStage: InterviewStage) => {
-    //     const updatedStages = fields.map((stage) => {
-    //         if (updatedStage.id === stage.id) {
-    //             return {
-    //                 ...stage,
-    //                 ...updatedStage,
-    //                 id: stage.id, // keep id as string
-    //             }
-    //         }
-    //         return stage
-    //     })
-    //     onUpdateJob({
-    //         ...job,
-    //         interview_stages: updatedStages,
-    //         status: inferStatusFromStages(updatedStages, job.status === 'rejected'),
-    //     })
-    // }
 
     return (
         <div className="fixed inset-0 bg-opacity-40 flex justify-center items-center z-50">
@@ -144,7 +143,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                                     </select>
                                     <button
                                         className="text-blue-600 text-sm"
-                                        onClick={() => setOpenStageDialog(field)}
+                                        onClick={() => handleSetStageDialog(field)}
                                         type="button"
                                     >
                                         Notes
@@ -175,7 +174,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                             type="button"
                             onClick={() =>
                                 append({
-                                    id: Date.now(), // or use a better unique id generator if available
+                                    stageId: Date.now(), // or use a better unique id generator if available
                                     jobId: job.id,
                                     stage: '',
                                     person: '',
@@ -221,7 +220,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                 {openStageDialog && (
                     <InterviewStageDialog
                         isOpen={!!openStageDialog}
-                        onClose={() => setOpenStageDialog(null)}
+                        onClose={(updatedStage) => handleOnClose(updatedStage)}
                         interviewStage={openStageDialog}
                         onUpdateStage={(updatedStage) => {
                             updateStageForJob(updatedStage.jobId, updatedStage)

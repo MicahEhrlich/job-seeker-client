@@ -34,8 +34,8 @@ export const useJobStore = create<JobStore>()(
                         if (job.id !== jobId) return job
                         return {
                             ...job,
-                            interview_stages: job.interview_stages && job.interview_stages.map((s) =>
-                                s.id === updatedStage.id ? updatedStage : s
+                            interview_stages: job.interview_stages && job.interview_stages.map((stage) =>
+                                stage.stageId === updatedStage.stageId ? updatedStage : stage
                             ),
                         }
                     }),

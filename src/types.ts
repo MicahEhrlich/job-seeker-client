@@ -2,7 +2,7 @@ export type JobStatus = 'applied' | 'interviewing' | 'offered' | 'rejected' | 'a
 export type InterviewStageStatus = 'pending' | 'upcoming' | 'done';
 export type InterviewStage = {
     jobId: number
-    id: number
+    stageId: number
     stage: string
     person: string
     date: string

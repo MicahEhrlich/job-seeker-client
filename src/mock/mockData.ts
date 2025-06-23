@@ -9,9 +9,21 @@ export const MOCK_JOBS:Job[] = [
     applied_date: '2025-05-01',
     notes: '',
     interview_stages: [
-      { stage: 'HR Call', person: 'Sarah Lee', date: '2025-05-02', status: 'done' },
-      { stage: 'Tech Interview', person: 'John Dev', date: '2025-05-06', status: 'upcoming' },
-      { stage: 'CTO Call', person: '', date: '', status: 'pending' }
+      {
+        stage: 'HR Call', person: 'Sarah Lee', date: '2025-05-02', status: 'done',
+        jobId: 1,
+        stageId: 1
+      },
+      {
+        stage: 'Tech Interview', person: 'John Dev', date: '2025-05-06', status: 'upcoming',
+        jobId: 1,
+        stageId: 2
+      },
+      {
+        stage: 'CTO Call', person: '', date: '', status: 'pending',
+        jobId: 1,
+        stageId: 3
+      }
     ]
   },
   {

@@ -4,7 +4,7 @@ import type { InterviewStage } from "../types"
 
 type Props = {
   isOpen: boolean
-  onClose: () => void
+  onClose: (updatedStage: InterviewStage) => void
   interviewStage: InterviewStage
   onUpdateStage: (updatedStage: InterviewStage) => void
 }
@@ -15,10 +15,11 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
 
   const handleAddQuestion = () => {
     if (!newQuestion.trim()) return
-    const updated = [...questions, newQuestion.trim()]
-    setQuestions(updated)
+    const updatedQuestions = [...questions, newQuestion.trim()]
+    setQuestions(updatedQuestions)
     setNewQuestion("")
-    onUpdateStage({ ...interviewStage, questionsAsked: updated })
+    const updatedStage = { ...interviewStage, questionsAsked: updatedQuestions }
+    onUpdateStage({ ...updatedStage, questionsAsked: updatedQuestions })
   }
 
   const handleDeleteQuestion = (index: number) => {
@@ -28,8 +29,13 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
     onUpdateStage({ ...interviewStage, questionsAsked: updated })
   }
 
+  const handleOnClose = () => {
+    const updatedStage = { ...interviewStage, questionsAsked: questions }
+    onClose(updatedStage)
+  }
+
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleOnClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-lg">
@@ -74,7 +80,7 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
 
           <div className="mt-4 text-right">
             <button
-              onClick={onClose}
+              onClick={handleOnClose}
               className="text-sm text-gray-500 hover:underline"
             >
               Close
