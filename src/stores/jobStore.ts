@@ -28,10 +28,10 @@ export const useJobStore = create<JobStore>()(
 
             setJobs: (jobs) => set({ jobs }),
             // inside your job store
-            updateStage: (jobId: number, updatedStage: InterviewStage) => {
+            updateStage: (updatedStage: InterviewStage) => {
                 set((state) => ({
                     jobs: state.jobs.map((job) => {
-                        if (job.id !== jobId) return job
+                        if (job.id !== updatedStage.jobId) return job
                         return {
                             ...job,
                             interview_stages: job.interview_stages && job.interview_stages.map((stage) =>

@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { Dialog } from "@headlessui/react"
 import type { InterviewStage } from "../types"
+import { JobService } from "../services/jobService"
 
 type Props = {
   isOpen: boolean
-  onClose: (updatedStage: InterviewStage) => void
+  onClose: () => void
   interviewStage: InterviewStage
   onUpdateStage: (updatedStage: InterviewStage) => void
 }
@@ -14,28 +15,16 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
   const [questions, setQuestions] = useState<string[]>(interviewStage.questionsAsked || [])
 
   const handleAddQuestion = () => {
-    if (!newQuestion.trim()) return
-    const updatedQuestions = [...questions, newQuestion.trim()]
-    setQuestions(updatedQuestions)
-    setNewQuestion("")
-    const updatedStage = { ...interviewStage, questionsAsked: updatedQuestions }
-    onUpdateStage({ ...updatedStage, questionsAsked: updatedQuestions })
+    JobService.handleAddQuestion(newQuestion, questions, interviewStage, setQuestions, onUpdateStage)
+    setNewQuestion("");
   }
 
   const handleDeleteQuestion = (index: number) => {
-    const updated = questions.filter((_, i) => i !== index)
-    const updatedQuestions = [...updated]
-    setQuestions(updatedQuestions)
-    onUpdateStage({ ...interviewStage, questionsAsked: updated })
-  }
-
-  const handleOnClose = () => {
-    const updatedStage = { ...interviewStage, questionsAsked: questions }
-    onClose(updatedStage)
+    JobService.handleDeleteQuestion(index, questions, setQuestions, interviewStage, onUpdateStage)
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-lg">
@@ -71,6 +60,8 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
               onKeyDown={(e) => e.key === "Enter" && handleAddQuestion()}
             />
             <button
+              disabled={!newQuestion.trim()}
+              type="button"
               onClick={handleAddQuestion}
               className="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700"
             >
@@ -80,7 +71,7 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
 
           <div className="mt-4 text-right">
             <button
-              onClick={handleOnClose}
+              onClick={onClose}
               className="text-sm text-gray-500 hover:underline"
             >
               Close

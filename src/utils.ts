@@ -1,13 +1,13 @@
 import type { InterviewStage } from "./types"
 
 export const statusColor = (status: string) => {
-    switch (status) {
-        case 'applied': return 'bg-gray-400'
-        case 'interviewing': return 'bg-yellow-400'
-        case 'offered': return 'bg-green-500'
-        case 'rejected': return 'bg-red-500'
-        default: return 'bg-gray-300'
-    }
+  switch (status) {
+    case 'applied': return 'bg-gray-400'
+    case 'interviewing': return 'bg-yellow-400'
+    case 'offered': return 'bg-green-500'
+    case 'rejected': return 'bg-red-500'
+    default: return 'bg-gray-300'
+  }
 }
 
 export const inferStatusFromStages = (stages: InterviewStage[], rejectedFlag = false) => {
@@ -27,3 +27,7 @@ export const inferStatusFromStages = (stages: InterviewStage[], rejectedFlag = f
 
   return 'applied'
 }
+
+export const sortInterviewStages = (stages: InterviewStage[]) => stages.sort((a, b) => {
+  return new Date(a.date).getTime() - new Date(b.date).getTime()
+})

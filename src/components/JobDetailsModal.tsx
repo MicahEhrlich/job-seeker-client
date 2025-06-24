@@ -7,10 +7,10 @@ import {
     HiXCircle,
 } from 'react-icons/hi';
 import type { InterviewStage, Job } from '../types';
-import { inferStatusFromStages } from '../utils';
 import { useState } from 'react';
 import { InterviewStageDialog } from './InterviewStageDialog';
 import { useJobStore } from '../stores/jobStore';
+import { JobService } from '../services/jobService';
 
 
 type JobDetailsModalProps = {
@@ -59,32 +59,12 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
     })
 
     const handleSetStageDialog = (stage: InterviewStage) => {
-        const updatedStage = {
-            ...stage,
-            questionsAsked: jobs.find(j => j.id === stage.jobId)?.interview_stages?.find(s => s.stageId === stage.stageId)?.questionsAsked || [],
-        }
-        setOpenStageDialog(updatedStage)
-    }
-
-    const handleOnClose = (stage: InterviewStage) => {
-        if (stage) {
-            updateStageForJob(stage.jobId, stage)
-        }
-        setOpenStageDialog(null)
+        const stageOnDialog = jobs.find(job => job.id === stage.jobId)?.interview_stages?.find(s => s.stageId === stage.stageId) || stage
+        setOpenStageDialog(stageOnDialog)
     }
 
     const onSubmit = (data: { interview_stages: InterviewStage[] }) => {
-        const sortedStages = [...data.interview_stages].sort((a, b) => {
-            return new Date(a.date).getTime() - new Date(b.date).getTime()
-        })
-
-        const inferredStatus = inferStatusFromStages(sortedStages, job.status === 'rejected')
-        onUpdateJob({
-            ...job,
-            interview_stages: sortedStages,
-            status: inferredStatus,
-        })
-
+        JobService.updateJobStages(data.interview_stages, job, onUpdateJob);
         onClose()
     }
 
@@ -130,7 +110,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                                         className="w-1/3 border px-2 py-1 rounded"
                                     />
                                 </div>
-
                                 <div className="flex items-center gap-3">
                                     <select
                                         {...register(`interview_stages.${index}.status`)}
@@ -168,7 +147,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                             </div>
                         )
                     })}
-
                     <div className="flex justify-between items-center">
                         <button
                             type="button"
@@ -220,11 +198,9 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                 {openStageDialog && (
                     <InterviewStageDialog
                         isOpen={!!openStageDialog}
-                        onClose={(updatedStage) => handleOnClose(updatedStage)}
+                        onClose={() => setOpenStageDialog(null)}
                         interviewStage={openStageDialog}
-                        onUpdateStage={(updatedStage) => {
-                            updateStageForJob(updatedStage.jobId, updatedStage)
-                        }}
+                        onUpdateStage={updateStageForJob}
                     />
                 )}
             </div>

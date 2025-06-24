@@ -30,7 +30,7 @@ export type JobStore = {
     updateJob: (id: string, update: Partial<Job>) => void
     deleteJob: (id: string) => void
     setJobs: (jobs: Job[]) => void
-    updateStage: (jobId: number, updatedStage: InterviewStage) => void
+    updateStage: (updatedStage: InterviewStage) => void
     searchQuery: string
     setSearchQuery: (query: string) => void
 }

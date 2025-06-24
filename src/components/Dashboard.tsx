@@ -5,6 +5,8 @@ import { JobDetailsModal } from "./JobDetailsModal.tsx";
 import { statusColor } from "../utils.ts";
 import { useJobStore } from "../stores/jobStore.ts";
 
+const JOB_STATUSES = ['all', 'interviewing', 'offered', 'rejected', 'applied'];
+
 export const Dashboard = () => {
     const jobs = useJobStore((state) => state.jobs)
     const setJobs = useJobStore((state => state.setJobs))
@@ -33,7 +35,7 @@ export const Dashboard = () => {
     return (
         <div className="max-w-4xl mx-auto px-4 py-6">
             <div className="flex gap-4 mb-4 flex-wrap">
-                {['all', 'interviewing', 'offered', 'rejected', 'applied'].map((s) => (
+                {JOB_STATUSES.map((s) => (
                     <button
                         key={s}
                         onClick={() => setFilter(s)}
