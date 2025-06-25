@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { AddNewJob } from "./AddNewJob.tsx";
-import type { Job } from "../types.ts";
-import { JobDetailsModal } from "./JobDetailsModal.tsx";
-import { statusColor } from "../utils.ts";
-import { useJobStore } from "../stores/jobStore.ts";
+import { AddNewJob } from "../AddNewJob.tsx";
+import type { Job } from "../../types.ts";
+import { JobDetailsModal } from "../JobDetailsModal.tsx";
+import { statusColor } from "../../utils.ts";
+import { useJobStore } from "../../stores/jobStore.ts";
 
 const JOB_STATUSES = ['all', 'interviewing', 'offered', 'rejected', 'applied'];
 

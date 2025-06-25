@@ -35,28 +35,22 @@ const getIcon = (status: string) => {
 }
 
 export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalProps) {
-    const {
-        control,
-        handleSubmit,
-        register,
-        watch,
-        // setError,
-        // clearErrors,
-        formState: { errors },
-    } = useForm({
+    const { control, handleSubmit, register, watch, formState: { errors } } = useForm({
         defaultValues: {
             interview_stages: job.interview_stages || [],
         },
     })
-    
+
     const jobs = useJobStore((state) => state.jobs)
     const [openStageDialog, setOpenStageDialog] = useState<InterviewStage | null>(null)
     const updateStageForJob = useJobStore((state) => state.updateStage)
 
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'interview_stages',
-    })
+    const { fields, append, remove } = useFieldArray({ control, name: 'interview_stages' })
+    const todayStr = format(new Date(), 'yyyy-MM-dd')
+
+    const handleAddStage = () => {
+        append({ stageId: Date.now(), jobId: job.id, stage: '', person: '', date: todayStr, status: 'pending', })
+    }
 
     const handleSetStageDialog = (stage: InterviewStage) => {
         const stageOnDialog = jobs.find(job => job.id === stage.jobId)?.interview_stages?.find(s => s.stageId === stage.stageId) || stage
@@ -68,7 +62,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
         onClose()
     }
 
-    const todayStr = format(new Date(), 'yyyy-MM-dd')
 
     return (
         <div className="fixed inset-0 bg-opacity-40 flex justify-center items-center z-50">
@@ -150,16 +143,7 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                     <div className="flex justify-between items-center">
                         <button
                             type="button"
-                            onClick={() =>
-                                append({
-                                    stageId: Date.now(), // or use a better unique id generator if available
-                                    jobId: job.id,
-                                    stage: '',
-                                    person: '',
-                                    date: todayStr,
-                                    status: 'pending',
-                                })
-                            }
+                            onClick={handleAddStage}
                             className="border px-3 py-1 rounded text-sm"
                         >
                             + Add Stage
@@ -177,7 +161,6 @@ export function JobDetailsModal({ job, onClose, onUpdateJob }: JobDetailsModalPr
                         >
                             Mark as Rejected
                         </button>}
-
                         <div className="space-x-2">
                             <button
                                 type="button"

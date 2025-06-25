@@ -4,9 +4,9 @@ import {
     FaCheckCircle,
     FaTimesCircle,
 } from "react-icons/fa"
-import { useJobStore } from "../stores/jobStore"
-import type { Job } from "../types.ts";
-import { SearchBar } from "./SearchBar.tsx";
+import { useJobStore } from "../../stores/jobStore"
+import type { Job } from "../../types.ts";
+import { SearchBar } from "./../SearchBar.tsx";
 
 const statuses: {
     key: string
