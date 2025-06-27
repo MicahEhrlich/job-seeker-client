@@ -1,12 +1,4 @@
-type QuestionEntry = {
-  id: string
-  question: string
-  stageTitle: string
-  jobTitle: string
-  company: string
-  tags: string[]
-  dateAdded: string
-}
+import type { QuestionEntry } from "../types";
 
 export const mockQuestions: QuestionEntry[] = [
   {

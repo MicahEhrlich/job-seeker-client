@@ -8,7 +8,7 @@ export type InterviewStage = {
     date: string
     status: string
     notes?: string
-    questionsAsked?: string[]
+    questionsAsked?: QuestionEntry[]
 }
 
 export type Job = {
@@ -22,6 +22,16 @@ export type Job = {
     offer_details?: string
     interview_stages?: InterviewStage[]
     created_at?: string
+}
+
+export type QuestionEntry = {
+  id: string
+  question: string
+  stageTitle: string
+  jobTitle: string
+  company: string
+  tags: string[]
+  dateAdded: string
 }
 
 export type JobStore = {

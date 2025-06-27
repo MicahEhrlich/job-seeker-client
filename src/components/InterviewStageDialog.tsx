@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Dialog } from "@headlessui/react"
-import type { InterviewStage } from "../types"
+import type { InterviewStage, QuestionEntry } from "../types"
 import { JobService } from "../services/jobService"
 
 type Props = {
@@ -12,15 +12,15 @@ type Props = {
 
 export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdateStage }: Props) => {
   const [newQuestion, setNewQuestion] = useState("")
-  const [questions, setQuestions] = useState<string[]>(interviewStage.questionsAsked || [])
+  const [questions, setQuestions] = useState<QuestionEntry[]>(interviewStage.questionsAsked || [])
 
   const handleAddQuestion = () => {
-    JobService.handleAddQuestion(newQuestion, questions, interviewStage, setQuestions, onUpdateStage)
+    JobService.handleAddQuestion(newQuestion, questions, interviewStage, setQuestions, onUpdateStage);
     setNewQuestion("");
   }
 
   const handleDeleteQuestion = (index: number) => {
-    JobService.handleDeleteQuestion(index, questions, setQuestions, interviewStage, onUpdateStage)
+    JobService.handleDeleteQuestion(index, questions, setQuestions, interviewStage, onUpdateStage);
   }
 
   return (
@@ -35,8 +35,8 @@ export const InterviewStageDialog = ({ isOpen, onClose, interviewStage, onUpdate
           <label className="block text-sm font-medium mb-1">Interview Questions</label>
           <ul className="mb-3 list-disc pl-5 space-y-1">
             {questions.map((q, i) => (
-              <li key={i} className="flex justify-between items-center gap-2">
-                <span className="text-sm">{q}</span>
+              <li key={q.id} className="flex justify-between items-center gap-2">
+                <span className="text-sm">{q.question}</span>
                 <button
                   onClick={() => handleDeleteQuestion(i)}
                   className="text-xs text-red-500 hover:underline"
